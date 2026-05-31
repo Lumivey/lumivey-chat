@@ -1,10 +1,132 @@
 <!DOCTYPE html>
-<html>
+<html lang="nl">
 <head>
-  <title>Lumivey MVP</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lumivey</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f7f7f5;
+    margin: 0;
+    padding: 40px;
+}
+
+.container {
+    max-width: 700px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+h1 {
+    margin-top: 0;
+}
+
+#chat {
+    min-height: 250px;
+    margin-bottom: 20px;
+}
+
+.message {
+    margin-bottom: 15px;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.lumivey {
+    background: #f1f1f1;
+}
+
+.user {
+    background: #e6f4ff;
+}
+
+input {
+    width: 75%;
+    padding: 12px;
+}
+
+button {
+    padding: 12px 20px;
+    cursor: pointer;
+}
+</style>
 </head>
+
 <body>
-  <h1>Lumivey MVP</h1>
-  <p>De eerste versie draait.</p>
+
+<div class="container">
+
+<h1>Welkom bij Lumivey</h1>
+
+<div id="chat">
+    <div class="message lumivey">
+        Wat heeft u nodig?
+    </div>
+</div>
+
+<input id="input" placeholder="Typ hier uw antwoord">
+<button onclick="sendMessage()">Versturen</button>
+
+</div>
+
+<script>
+
+let step = 1;
+
+function sendMessage() {
+
+    const input = document.getElementById("input");
+    const value = input.value.trim();
+
+    if(value === "") return;
+
+    const chat = document.getElementById("chat");
+
+    chat.innerHTML += `
+      <div class="message user">${value}</div>
+    `;
+
+    if(step === 1) {
+
+        chat.innerHTML += `
+          <div class="message lumivey">
+          Heeft u al een website?
+          </div>
+        `;
+
+        step = 2;
+
+    } else if(step === 2) {
+
+        chat.innerHTML += `
+          <div class="message lumivey">
+          Wat is de naam van uw bedrijf?
+          </div>
+        `;
+
+        step = 3;
+
+    } else {
+
+        chat.innerHTML += `
+          <div class="message lumivey">
+          Bedankt. Dit is het einde van de eerste test.
+          </div>
+        `;
+
+    }
+
+    input.value = "";
+
+    window.scrollTo(0, document.body.scrollHeight);
+}
+
+</script>
+
 </body>
 </html>
