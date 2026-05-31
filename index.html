@@ -84,6 +84,8 @@ button {
 </div>
 
 <script>
+let history = [];
+
 async function sendMessage() {
     const input = document.getElementById("input");
     const value = input.value.trim();
@@ -92,17 +94,16 @@ async function sendMessage() {
 
     const chat = document.getElementById("chat");
 
-    chat.innerHTML += `
-        <div class="message user">${value}</div>
-    `;
+    addMessage("user", value);
+
+    history.push({
+        role: "user",
+        content: value
+    });
 
     input.value = "";
 
-    chat.innerHTML += `
-        <div class="message lumivey" id="thinking">
-            Lumivey denkt even mee...
-        </div>
-    `;
+    const thinkingId = addMessage("lumivey", "Lumivey denkt even mee...");
 
     try {
         const response = await fetch("/api/chat", {
@@ -111,29 +112,49 @@ async function sendMessage() {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                message: value
+                message: value,
+                history: history
             })
         });
 
         const data = await response.json();
 
-        document.getElementById("thinking").remove();
+        removeMessage(thinkingId);
 
-        chat.innerHTML += `
-            <div class="message lumivey">${data.reply}</div>
-        `;
+        addMessage("lumivey", data.reply);
+
+        history.push({
+            role: "assistant",
+            content: data.reply
+        });
 
     } catch (error) {
-        document.getElementById("thinking").remove();
-
-        chat.innerHTML += `
-            <div class="message lumivey">
-                Er ging iets mis. Probeer het nogmaals.
-            </div>
-        `;
+        removeMessage(thinkingId);
+        addMessage("lumivey", "Er ging iets mis. Probeer het nogmaals.");
     }
 
     window.scrollTo(0, document.body.scrollHeight);
+}
+
+function addMessage(type, text) {
+    const chat = document.getElementById("chat");
+    const id = "msg-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
+
+    const div = document.createElement("div");
+    div.className = "message " + type;
+    div.id = id;
+    div.textContent = text;
+
+    chat.appendChild(div);
+
+    return id;
+}
+
+function removeMessage(id) {
+    const element = document.getElementById(id);
+    if (element) {
+        element.remove();
+    }
 }
 
 document.getElementById("input").addEventListener("keydown", function(event) {
