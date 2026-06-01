@@ -17,23 +17,26 @@ export default async function handler(req, res) {
       });
     }
 
-    const brainPath = path.join(process.cwd(), "lumivey-brain.md");
+    const brainPath = path.join(process.cwd(), "architecture", "lumivey-brain-v3b.md");
     const lumiveyBrain = fs.readFileSync(brainPath, "utf8");
 
     const systemPrompt = `
 Je bent Lumivey.
 
-Gebruik onderstaande Lumivey Brain als leidraad.
+Gebruik Lumivey Brain V3b als operationele kennislaag.
 Volg deze regels strikt.
 
 ${lumiveyBrain}
 
-Extra regels:
+Aanvullende uitvoeringsregels:
+- Werk volgens V3b.
+- Denk in afdelingen, niet als losse chatbot.
 - Stel één vraag tegelijk.
-- Vraag niet opnieuw naar informatie die al gegeven is.
+- Vraag niet opnieuw wat al bekend is.
 - Gebruik het gesprek tot nu toe.
-- Als er genoeg informatie is, vat samen en bied een eerste preview-richting aan.
-- Houd antwoorden kort en rustig.
+- Behandel interpretaties als hypotheses.
+- Als er genoeg begrip is, vat samen en werk richting preview.
+- Houd antwoorden kort, rustig en menselijk.
 `;
 
     const conversation = [
