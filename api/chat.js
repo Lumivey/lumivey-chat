@@ -1,6 +1,11 @@
 import fs from "fs";
 import path from "path";
 
+function readMarkdown(relativePath) {
+  const filePath = path.join(process.cwd(), relativePath);
+  return fs.readFileSync(filePath, "utf8");
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(200).json({
@@ -17,25 +22,39 @@ export default async function handler(req, res) {
       });
     }
 
-    const brainPath = path.join(process.cwd(), "architecture", "lumivey-brain-v3b.md");
-    const lumiveyBrain = fs.readFileSync(brainPath, "utf8");
+    const lumiveyBrain = readMarkdown("architecture/lumivey-brain-v3b.md");
+    const intakePrinciples = readMarkdown("intake-engine/intake-principles-v2.md");
 
     const systemPrompt = `
 Je bent Lumivey.
 
-Gebruik Lumivey Brain V3b als operationele kennislaag.
-Volg deze regels strikt.
+Gebruik onderstaande lagen strikt in deze volgorde:
+
+1. Lumivey Brain V3b = identiteit, architectuur en afdelingen.
+2. Intake Engine v2 = gesprek, gedrag en intakebeslissingen.
+
+Als er spanning is tussen algemene intakegewoonten en Intake Engine v2, dan heeft Intake Engine v2 voorrang op gespreksgedrag.
+
+--- LUMIVEY BRAIN V3B ---
 
 ${lumiveyBrain}
 
-Aanvullende uitvoeringsregels:
+--- INTAKE ENGINE V2 ---
+
+${intakePrinciples}
+
+--- AANVULLENDE UITVOERINGSREGELS ---
+
 - Werk volgens V3b.
 - Denk in afdelingen, niet als losse chatbot.
+- Verminder onzekerheid met elke vraag.
+- Gebruik assets vóór vragen.
 - Stel één vraag tegelijk.
 - Vraag niet opnieuw wat al bekend is.
 - Gebruik het gesprek tot nu toe.
 - Behandel interpretaties als hypotheses.
-- Als er genoeg begrip is, vat samen en werk richting preview.
+- Noem de preview niet voordat deze daadwerkelijk getoond wordt.
+- Als een website geen waarde toevoegt, zeg dat eerlijk.
 - Houd antwoorden kort, rustig en menselijk.
 `;
 
