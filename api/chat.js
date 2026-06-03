@@ -1,11 +1,6 @@
 import fs from "fs";
 import path from "path";
 
-function readMarkdown(relativePath) {
-  const filePath = path.join(process.cwd(), relativePath);
-  return fs.readFileSync(filePath, "utf8");
-}
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(200).json({
@@ -22,52 +17,51 @@ export default async function handler(req, res) {
       });
     }
 
-    const lumiveyBrain = readMarkdown("architecture/lumivey-brain-v3b.md");
-    const intakePrinciples = readMarkdown("intake-engine/intake-principles-v2.md");
+    const brainPath = path.join(process.cwd(), "lumivey-brain.md");
+    const lumiveyBrain = fs.readFileSync(brainPath, "utf8");
+
+    const intakeEngine = `
+INTAKE ENGINE V2 - KERNREGELS
+
+- Lumivey bouwt geen websites. Lumivey vermindert onzekerheid.
+- Stel alleen vragen die onzekerheid verminderen.
+- Stel één vraag tegelijk.
+- Vraag niet opnieuw wat al bekend is.
+- Gebruik eerder gegeven informatie actief.
+- Gebruik assets vóór vragen.
+- Als iemand een URL geeft: analyseer eerst wat daaruit blijkt.
+- Als iemand zegt "ik weet het niet" of "ik heb alle hulp nodig": schakel naar Expert Mode.
+- In Expert Mode: minder vragen, meer advies.
+- Identiteit gaat vóór functionaliteit.
+- Bij groei, trots, verandering of ambitie: eerst betekenis onderzoeken.
+- Preview is een verrassing. Noem nooit "preview" of "WoW-preview" voordat je die daadwerkelijk toont.
+- Als een website geen waarde toevoegt, zeg dat eerlijk.
+- Budget is een harde grens.
+- Geen verkooptaal.
+- Geen lange antwoorden.
+- Geen dossier-taal tegen de gebruiker.
+- Rust boven snelheid.
+`;
 
     const systemPrompt = `
 Je bent Lumivey.
 
-Gebruik onderstaande lagen strikt in deze volgorde:
+Gebruik Lumivey Brain als kennislaag.
+Gebruik Intake Engine v2 als gedragslaag.
 
-1. Lumivey Brain V3b = identiteit, architectuur en afdelingen.
-2. Intake Engine v2 = gesprek, gedrag en intakebeslissingen.
-
-Als er spanning is tussen algemene intakegewoonten en Intake Engine v2, dan heeft Intake Engine v2 voorrang op gespreksgedrag.
-
---- LUMIVEY BRAIN V3B ---
+--- LUMIVEY BRAIN ---
 
 ${lumiveyBrain}
 
 --- INTAKE ENGINE V2 ---
 
-${intakePrinciples}
-
---- AANVULLENDE UITVOERINGSREGELS ---
-
-- Werk volgens V3b.
-- Denk in afdelingen, niet als losse chatbot.
-- Verminder onzekerheid met elke vraag.
-- Gebruik assets vóór vragen.
-- Stel één vraag tegelijk.
-- Vraag niet opnieuw wat al bekend is.
-- Gebruik het gesprek tot nu toe.
-- Behandel interpretaties als hypotheses.
-- Noem de preview niet voordat deze daadwerkelijk getoond wordt.
-- Als een website geen waarde toevoegt, zeg dat eerlijk.
-- Houd antwoorden kort, rustig en menselijk.
+${intakeEngine}
 `;
 
     const conversation = [
-      {
-        role: "system",
-        content: systemPrompt
-      },
+      { role: "system", content: systemPrompt },
       ...history,
-      {
-        role: "user",
-        content: message
-      }
+      { role: "user", content: message }
     ];
 
     const response = await fetch("https://api.openai.com/v1/responses", {
