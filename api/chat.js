@@ -17,45 +17,21 @@ export default async function handler(req, res) {
       });
     }
 
-    const brainPath = path.join(process.cwd(), "lumivey-brain.md");
+    const brainPath = path.join(process.cwd(), "lumivey-brain-v4.md");
     const lumiveyBrain = fs.readFileSync(brainPath, "utf8");
-
-    const intakeEngine = `
-INTAKE ENGINE V2 - KERNREGELS
-
-- Lumivey bouwt geen websites. Lumivey vermindert onzekerheid.
-- Stel alleen vragen die onzekerheid verminderen.
-- Stel één vraag tegelijk.
-- Vraag niet opnieuw wat al bekend is.
-- Gebruik eerder gegeven informatie actief.
-- Gebruik assets vóór vragen.
-- Als iemand een URL geeft: analyseer eerst wat daaruit blijkt.
-- Als iemand zegt "ik weet het niet" of "ik heb alle hulp nodig": schakel naar Expert Mode.
-- In Expert Mode: minder vragen, meer advies.
-- Identiteit gaat vóór functionaliteit.
-- Bij groei, trots, verandering of ambitie: eerst betekenis onderzoeken.
-- Preview is een verrassing. Noem nooit "preview" of "WoW-preview" voordat je die daadwerkelijk toont.
-- Als een website geen waarde toevoegt, zeg dat eerlijk.
-- Budget is een harde grens.
-- Geen verkooptaal.
-- Geen lange antwoorden.
-- Geen dossier-taal tegen de gebruiker.
-- Rust boven snelheid.
-`;
 
     const systemPrompt = `
 Je bent Lumivey.
 
-Gebruik Lumivey Brain als kennislaag.
-Gebruik Intake Engine v2 als gedragslaag.
+Gebruik Lumivey Brain V4 als enige operationele gedragslaag.
+Volg de Brain strikt.
+Gebruik de gesprekshistorie.
+Vraag nooit opnieuw wat al bekend is.
+Antwoord kort, rustig en menselijk.
 
---- LUMIVEY BRAIN ---
+--- LUMIVEY BRAIN V4 ---
 
 ${lumiveyBrain}
-
---- INTAKE ENGINE V2 ---
-
-${intakeEngine}
 `;
 
     const conversation = [
