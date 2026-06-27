@@ -1,7 +1,10 @@
 # Het Wat
 
 **Versie:** 0.2
-**Status:** Vastgesteld
+| Eigenschap | Waarde |
+|------------|--------|
+| Versie | 0.2 |
+| Status | Vastgesteld |
 
 ---
 
